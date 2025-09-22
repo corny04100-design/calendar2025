@@ -209,10 +209,10 @@
 
     function getYear(){ return new Date().getFullYear(); }
 
-    /* 요약 목록 문구 (요청 반영: 정기분 파란글씨 & 문구 변경) */
+    /* 요약 목록 문구 (정기분 파란글씨 & 문구 조정 반영) */
     const MONTH_SUMMARY = {
       1: `<div style="text-align:left">
-            ① <span class="blue">등록면허세(면허분) 부과</span><br>
+            ① <span class="blue">등록면허세(면허분) 신고</span><br>
             ② 자동차세 연납신청
           </div>`,
       2: `<strong>법인지방소득세 특별징수명세서 제출</strong>`,
@@ -224,7 +224,10 @@
             ① <span class="blue">7월 재산세(주택 1기분, 건축물, 선박 등) 부과</span><br>
             ② 건물사용명세서 제출(주민세 사업소분)
           </div>`,
-      8: `<span class="blue">주민세 사업소분 신고</span>`,
+      8: `<div style="text-align:left">
+            ① 주민세 사업소분 신고<br>
+            ② <span class="blue">주민세 개인분 부과</span>
+          </div>`,
       9: `<span class="blue">재산세(주택 2기분, 토지) 부과</span>`,
       10: `이달 납부 항목 확인`,
       11: `이달 납부 항목 확인`,
