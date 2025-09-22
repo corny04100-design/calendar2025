@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>지방세 캘린더 – 전체 보기</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#475569; --line:#e2e8f0;
+      --brand:#2563eb; --brand-weak:#eff6ff; --chip:#e2f0ff; --chip-text:#1e40af;
+      --tone-yellow-bg:#fffbeb;
+      --tone-yellow-strong:#fef3c7;
+      --tone-yellow-border:#fcd34d;
+      --tone-green-bg:#ecfdf5;
+      --tone-green-border:#86efac;
+      --tone-gray-bg:#f3f4f6;
+      --tone-blue-bg:#eff6ff;
+      --tone-blue-border:#bfdbfe;
+    }
+
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Pretendard,"Noto Sans KR",Arial,sans-serif}
+    .wrap{max-width:920px;margin:20px auto;padding:0 16px}
+    .header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .header .title{font-weight:900;font-size:22px}
+    .header .sp{flex:1}
+
+    button,.btn{cursor:pointer}
+    .btn{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:transparent;color:#000 !important;text-decoration:none}
+    a.btn:link,a.btn:visited,a.btn:hover,a.btn:active{color:#000 !important}
+    .btn.primary{background:var(--brand);color:#fff;border-color:transparent}
+
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .p3{padding:16px}
+    .muted{color:var(--muted)}
+
+    .month-list{display:flex;flex-direction:column;gap:10px}
+    .mon{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:inherit}
+    .mon:hover{background:color-mix(in oklab, var(--brand-weak) 35%, var(--card))}
+    .mon .num{min-width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--brand-weak);font-weight:900}
+    .mon .text{display:flex;flex-direction:column}
+    .mon .desc{font-size:15px;color:#000;font-weight:500}
+
+    .section-title{margin-top:6px;font-family:ui-rounded,"SF Pro Rounded","NanumSquareRound","Pretendard","Noto Sans KR",system-ui,sans-serif;font-size:22px;font-weight:800;line-height:1.35;letter-spacing:-0.1px}
+
+    .footerbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background-color:#eef2ff}
+    .footerbar .btn{background:#fff}
+
+    .item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#f6faff}
+
+    .info-box,.desc-box{margin-top:10px;white-space:pre-line;padding:12px;border-radius:10px;border:1px solid var(--line);font-family:ui-rounded,"SF Pro Rounded","NanumSquareRound","Pretendard","Noto Sans KR",sans-serif;font-size:15px;line-height:1.55}
+    .desc-box{background:#f9fafb}
+    .info-box{background:var(--tone-gray-bg)}
+
+    .info-label{display:inline-block;min-width:80px;font-weight:700}
+
+    .empty{padding:14px;border:1px dashed var(--line);border-radius:12px;text-align:center}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .hidden{display:none !important}
+
+    /* 파란 톤 표 스타일 (진한 옅은 파랑) */
+    .table-box.tone-blue{ border:1px solid #bfdbfe; }
+    .table-box.tone-blue th{ background:#e6f0ff; }
+    .table-box.tone-blue td{ background:#f3f8ff; }
+
+    /* tone-blue 표 간격/가독성 개선 */
+    .table-box.tone-blue{ border:1px solid #bfdbfe; border-radius:8px; overflow:hidden; }
+    .table-box.tone-blue table{ width:100%; border-collapse:collapse; font-size:15px; }
+    .table-box.tone-blue th,
+    .table-box.tone-blue td{ border:1px solid #dbeafe; padding:12px 16px; text-align:center; line-height:1.6; }
+    .table-box.tone-blue th{ background:#e6f0ff; font-weight:800; }
+    .table-box.tone-blue td{ background:#f3f8ff; }
+
+    /* 한 줄 유지 + 살짝 촘촘한 자간 */
+    .nowrap-tight{ white-space:nowrap; letter-spacing:-0.1px; }
+
+    /* ===== 세액계산 퀵박스 ===== */
+    .quickbox{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .quickbox .label{ font-weight:900; font-size:15px; padding:8px 10px; border-radius:10px; background:var(--chip); color:var(--chip-text); border:1px solid #c7e0ff; }
+    .quickbox .linkbox{ display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--line); background:#fff; border-radius:12px; text-decoration:none; color:inherit; font-weight:700; }
+    .quickbox .linkbox:hover{ background:color-mix(in oklab, var(--brand-weak) 35%, #fff); border-color:#c7d2fe; }
+
+    /* 월 요약 배경 톤 (1·2·4월) */
+    .month-list .mon[data-month="1"] .desc{background:var(--tone-yellow-bg);border:1px solid var(--tone-yellow-strong);border-radius:10px;padding:8px 10px;}
+    .month-list .mon[data-month="2"] .desc{background:var(--tone-green-bg);border:1px solid var(--tone-green-border);border-radius:10px;padding:8px 10px;}
+    .month-list .mon[data-month="4"] .desc{background:var(--tone-blue-bg);border:1px solid var(--tone-blue-border);border-radius:10px;padding:8px 10px;}
+
+    /* === 4월 상세 디자인 강화 === */
+    .desc-box{white-space:normal}
+    .desc-section{margin:10px 0; padding:10px 12px; border:1px dashed #e5e7eb; border-radius:10px; background:#fff}
+    .desc-title{font-weight:900; font-size:16px; margin:0 0 6px 0; display:flex; align-items:center; gap:6px}
+    .desc-title .dot{width:8px; height:8px; border-radius:50%; background:#2563eb; display:inline-block}
+    .desc-box ul{margin:0 0 6px 1.2em; padding:0}
+    .desc-box li{margin:3px 0;}
+    .note{font-size:14px; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; padding:8px 10px; border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">지방세 캘린더</div>
+      <div class="sp"></div>
+      <button id="btnBack" class="btn hidden" aria-label="월 목록으로">← 목록으로</button>
+    </div>
+
+    <!-- 세액계산 퀵박스 -->
+    <div class="card p3 quickbox" aria-label="세액계산 바로가기">
+      <span class="label">세액계산</span>
+      <a class="linkbox" href="https://corny04100-design.github.io/acquisition2025/" target="_blank" rel="noopener">개인 취득세계산 ↗</a>
+      <a class="linkbox" href="https://corny04100-design.github.io/property2025/" target="_blank" rel="noopener">재산세계산(공동주택) ↗</a>
+      <a class="linkbox" href="https://corny04100-design.github.io/property2025_land/" target="_blank" rel="noopener">재산세계산(토지) ↗</a>
+    </div>
+
+    <section id="monthView" class="card p3" aria-label="월별 세목 요약">
+      <div id="monthList" class="month-list" role="navigation" aria-label="월 선택"></div>
+    </section>
+
+    <section id="detailView" class="card p3 hidden" aria-live="polite">
+      <div class="head" style="display:flex;align-items:center;gap:10px">
+        <button id="btnBackTop" class="btn" aria-label="뒤로">←</button>
+        <h2 id="detailTitle" style="margin:0;font-size:18px;font-weight:900;display:inline-block">-</h2>
+        <div class="sp"></div>
+      </div>
+      <div class="hr"></div>
+      <div id="detailSummary" class="muted" style="margin-top:8px"></div>
+      <div id="detailList" class="list"></div>
+    </section>
+  </div>
+
+  <script>
+    const LS_KEY = "localtax_month_ui_v1";
+    const qs = s => document.querySelector(s);
+    const elMonthView = qs("#monthView");
+    const elDetailView = qs("#detailView");
+    const elMonthList = qs("#monthList");
+    const elTitle = qs("#detailTitle");
+    const elSummary = qs("#detailSummary");
+    const elList = qs("#detailList");
+    const elBtnBack = qs("#btnBack");
+    const elBtnBackTop = qs("#btnBackTop");
+
+    function getYear(){ return new Date().getFullYear(); }
+    function saveViewMonth(m){ localStorage.setItem(LS_KEY, String(m)); }
+
+    const MONTH_SUMMARY = {
+      1: "<div style='text-align:left'>① <strong>등록면허세(면허분)</strong> 신고·납부<br>② <strong>자동차세 연납신청</strong></div>",
+      2: "<strong>법인지방소득세 특별징수명세서 제출</strong>",
+      3: "",
+      4: "<strong>법인지방소득세 신고</strong>",
+      5: "",
+      6: "<strong>자동차세</strong> 제1기분(16~말일)",
+      7: "<strong>재산세</strong>(주택·건축물 등 16~말일)",
+      8: "<strong>주민세</strong> 개인분/사업소분(16~말일)",
+      9: "<strong>재산세</strong>(토지 등 16~말일)",
+      10: "",
+      11: "",
+      12: "<strong>자동차세</strong> 제2기분(16~말일)",
+    };
+
+    function renderMonthList(){
+      elMonthList.innerHTML = Array.from({length:12}, (_,i)=>{
+        const m = i+1;
+        const sum = MONTH_SUMMARY[m] || "이달 납부 항목 확인";
+        return `
+          <button class="mon" data-month="${m}" aria-label="${m}월 상세 보기">
+            <div class="num">${m}월</div>
+            <div class="text">
+              <div class="desc">${sum}</div>
+            </div>
+          </button>
+        `;
+      }).join("");
+
+      elMonthList.querySelectorAll(".mon").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const m = Number(btn.dataset.month);
+          openDetail(m, {push:true});
+        });
+      });
+    }
+
+    function openDetail(month,{push}={}){
+      saveViewMonth(month);
+      if(push) location.hash = `#m${month}`;
+      elTitle.textContent = `${getYear()}년 ${month}월 지방세`;
+      elSummary.innerHTML = MONTH_SUMMARY[month] || "";
+
+      // 상세 화면 전용: 1월·2월은 상단 요약 문구 제거(요약 목록 화면은 유지)
+      if(month === 1 || month === 2){
+        elSummary.innerHTML = "";
+      }
+      // 4월 상세: 상단 요약문구(법인지방소득세 신고) 대신 링크 버튼 4종 표시
+      if(month === 4){
+        elSummary.innerHTML = `
+          <div class="footerbar">
+            <a class="btn" target="_blank" href="https://www.wetax.go.kr/etr/lit/b0704/B070401M01.do">위택스 신고</a>
+            <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/loi/J030801M01.do">미리계산</a>
+            <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/loi/J030201M01.do">주요서식</a>
+            <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/wtg/J040201M01.do">FAQ</a>
+          </div>`;
+      }
+
+      if(month===1){
+        elList.innerHTML = `
+          <!-- 🔶 노랑톤 섹션 -->
+          <div class="item soft yellow">
+            <div class="section-title">등록면허세(면허분) 상세 안내</div>
+
+            <div class="footerbar">
+              <a class="btn" target="_blank" href="https://www.wetax.go.kr/etr/rlt/b0202/B020201M00.do">🧾 위택스 면허분 신고</a>
+              <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/loi/J030201M01.do">📄 주요서식</a>
+              <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/wtg/J040201M01.do">❓ FAQ</a>
+              <a class="btn" target="_blank" href="https://www.law.go.kr/LSW/lsSc.do?query=%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95">🔍 지방세법</a>
+            </div>
+
+            <div class=\"muted\" style=\"margin-top:6px;white-space:pre-line;color:#000\"> 면허·허가 등을 부여받은 자는 등록면허세(면허분)를 신고하여야 합니다.\n① 최초로 면허 허가 등을 부여받은 자는 등록면허세를 자진신고 및 납부하여야하며\n② 면허·허가 등을 소지한 자에게는 매년 1월마다 정기적으로 면허세가 부과됩니다.
+            </div>
+
+            <div class=\"table-box tone-blue\">
+              <table>
+                <thead>
+                  <tr><th>구분</th><th>제1종</th><th>제2종</th><th>제3종</th><th>제4종</th><th>제5종</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>금액</td><td>67,500원</td><td>54,000원</td><td>40,500원</td><td>27,000원</td><td>18,000원</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ✅ 녹색톤 섹션 -->
+          <div class="item soft green" style="background:#ecfdf5;border-color:#a7f3d0">
+            <div class="section-title">자동차세 연납신청 안내</div>
+
+            <div class=\"footerbar\" style=\"background-color:#d1fae5;border-color:#86efac\"> 
+              <a class=\"btn\" target=\"_blank\" href=\"https:\/\/www.wetax.go.kr\/etq\/tqc\/aup\/C060101M01.do\">🚗 위택스 연납신청<\/a>
+            <\/div>
+
+            <div class="muted" style="margin-top:6px;white-space:normal">
+              <h4>📅 연세액납부 신청기간</h4>
+              <ul>
+                <li>1월 연납 : <strong>1월 16일 ~ 1월 31일</strong> (연세액의 약 4.57% 세액공제)</li>
+                <li>3월 연납 : <strong>3월 16일 ~ 3월 31일</strong> (연세액의 약 3.76% 세액공제)</li>
+                <li>6월 연납 : <strong>6월 16일 ~ 6월 30일</strong> (연세액의 약 2.52% 세액공제)</li>
+                <li>9월 연납 : <strong>9월 16일 ~ 9월 30일</strong> (제2기분세액의 약 2.5% 세액공제)</li>
+              </ul>
+
+              <h4>ℹ️ 이용 도움말</h4>
+              <ul>
+                <li>연세액이 10만원 미만 차량의 경우 1월, 3월에만 연납신청 가능합니다.</li>
+                <li class="nowrap-tight">신고납부기한 이후의 기간에 대해서만 해당 공제액이 적용되므로, 공제기간 및 공제세액을 확인하시기 바랍니다.</li>
+                <li>매년 6월에 신고하시는 분 중 연세액 총액이 10만원 미만일 경우는 정기분으로 이미 부과되었는지 확인 후 없는 경우에만 신고하십시오. <strong>(이중납부에 주의하세요)</strong></li>
+                <li>연납신청 마감일이 휴일일 경우 다음 영업일이 신청 마감일입니다.</li>
+                <li>자동차세 연납 부과금액(연세액)은 자동납부 되지 않으니 직접 납부하시기 바랍니다.</li>
+                <li>별도로 신고납부하지 않은 경우 6월(1기분), 12월(2기분)에 정기분으로 부과됩니다.</li>
+              </ul>
+            </div>
+          </div>
+        `;
+      }
+      else if(month===2){
+        elList.innerHTML = `
+          <div class="item">
+            <div class="section-title">법인지방소득세 특별징수명세서 제출 안내</div>
+
+            <div class="footerbar">
+              <a class="btn" target="_blank" href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9%EB%B3%84%ED%91%9C%EC%84%9C%EC%8B%9D/(%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95%20%EC%8B%9C%ED%96%89%EA%B7%9C%EC%B9%99,%EC%84%9C%EC%8B%9D42%EC%9D%984)">서식 다운로드</a>
+              <a class="btn" target="_blank" href="https://www.wetax.go.kr/tcp/wtg/J040201M01.do">FAQ</a>
+            </div>
+
+            <div class="desc-box"> 법인지방소득세(이자·배당소득) 특별징수의무자는 직전년도 귀속 내국법인 및 외국법인(국내원천소득)의 이자·배당소득에 대한 특별징수명세서를 작성하여 <strong>2월 말일까지</strong> 관할구청 세무부서에 제출하여야합니다. </div>
+
+            <div class="info-box"> <span class="info-label">대    상:</span> 법인지방소득세(이자·배당소득) 특별징수의무자\n<span class="info-label">근    거:</span> 지방세법 시행령 제100조의 19\n<span class="info-label">제출자료:</span> 내국법인 및 외국법인(국내원천소득)의 이자·배당소득에 대한 특별징수명세서\n<span class="info-label">제출서식:</span> 법인지방소득세 특별징수명세서(지방세법시행규칙 별지 제42호의4) </div>
+          </div>
+        `;
+      }
+      else if(month===4){
+        // ✅ 요청하신 문구를 보기 좋게 구조화·디자인 반영
+        elList.innerHTML = `
+          <div class="item">
+            <div class="section-title">법인지방소득세 신고 안내</div>
+            <div class="desc-box">
+              <div class="desc-section">
+                <div class="desc-title"><span class="dot"></span> 신고·납부기간</div>
+                <ul>
+                  <li>사업장 소재지 관할 지자체별로 안분 계산하여 <strong>해당 사업연도 종료일부터 4개월 이내</strong></li>
+                  <li>법인소득분 : <strong>4월 1일 ~ 4월 30일</strong></li>
+                </ul>
+              </div>
+
+              <div class="desc-section">
+                <div class="desc-title"><span class="dot"></span> 납부방법</div>
+                <ul>
+                  <li>신고납부 : 관할 지자체 또는 <strong>위택스</strong>로 신고·납부</li>
+                  <li>특별징수 : 원천징수의무자(임금, 이자 등 소득을 지급하는 자)가 관할 지자체에 납부(기존과 동일)</li>
+                  <li>결정·경정 : 관할 지자체에서 결정·경정·수시부과</li>
+                </ul>
+              </div>
+
+              <div class="desc-section">
+                <div class="desc-title"><span class="dot"></span> 납세자</div>
+                <ul>
+                  <li>소득세 및 법인세 납세의무가 있는 자(개인 및 법인)</li>
+                </ul>
+              </div>
+
+              <div class="desc-section">
+                <div class="desc-title"><span class="dot"></span> 납부기한 연장 혜택</div>
+                <ul>
+                  <li>코로나19로 인한 운영시간 제한 업종의 중소기업은 <strong>6개월(최대 1년)</strong>까지 기간 연장 가능</li>
+                  <li>고용위기지역·산업위기대응 특별지역 소재 중소기업은 <strong>6개월(최대 1년)</strong>까지 기간 연장 가능</li>
+                  <li>당해년도 산불피해 특별재난지역으로 선포된 지역 소재 중소기업은 <strong>6개월(최대 1년)</strong>까지 기간 연장 가능</li>
+                </ul>
+                <div class="note">* 법인세(국세) 납부기한 직권연장을 받은 기업은 별도의 신청 없이 <strong>자동연장(3개월)</strong>됩니다.</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      else {
+        elList.innerHTML = `<div class=\"empty\">등록된 일정이 없습니다. 관할 지자체 공지를 확인하세요.<\/div>`;
+      }
+
+      elMonthView.classList.add("hidden");
+      elDetailView.classList.remove("hidden");
+      elBtnBack.classList.remove("hidden");
+    }
+
+    function backToList(){
+      elDetailView.classList.add("hidden");
+      elMonthView.classList.remove("hidden");
+      elBtnBack.classList.add("hidden");
+      if(location.hash) history.pushState("", document.title, location.pathname + location.search);
+    }
+
+    elBtnBack.onclick = backToList;
+    elBtnBackTop.onclick = backToList;
+    window.addEventListener("hashchange", ()=>{
+      const m = (location.hash.match(/^#m(\d{1,2})$/)||[])[1];
+      if(m){ openDetail(Number(m), {push:false}); }
+      else { backToList(); }
+    });
+
+    backToList(); // 접속 시 항상 전체 요약화면으로 시작
+    renderMonthList();
+  </script>
+</body>
+</html>
+.
