@@ -16,6 +16,20 @@
       --tone-gray-bg:#f3f4f6;
       --tone-blue-bg:#eff6ff;
       --tone-blue-border:#bfdbfe;
+
+      /* ▼ 월별 파스텔 팔레트 (배경/테두리) */
+      --m1-bg:#fff7ed;  --m1-br:#fed7aa;   /* 1월: 오렌지 */
+      --m2-bg:#f0fdf4;  --m2-br:#bbf7d0;   /* 2월: 그린 */
+      --m3-bg:#fefce8;  --m3-br:#fde68a;   /* 3월: 옐로우 */
+      --m4-bg:#eff6ff;  --m4-br:#bfdbfe;   /* 4월: 블루 */
+      --m5-bg:#f5f3ff;  --m5-br:#ddd6fe;   /* 5월: 바이올렛 */
+      --m6-bg:#e0f2fe;  --m6-br:#bae6fd;   /* 6월: 스카이 */
+      --m7-bg:#fef2f2;  --m7-br:#fecaca;   /* 7월: 로즈 */
+      --m8-bg:#faf5ff;  --m8-br:#e9d5ff;   /* 8월: 퍼플 */
+      --m9-bg:#ecfeff;  --m9-br:#a5f3fc;   /* 9월: 시안 */
+      --m10-bg:#f0f9ff; --m10-br:#bae6fd;  /* 10월: 라이트블루 */
+      --m11-bg:#fdf2f8; --m11-br:#fbcfe8;  /* 11월: 핑크 */
+      --m12-bg:#f1f5f9; --m12-br:#e2e8f0;  /* 12월: 슬레이트 */
     }
 
     *{box-sizing:border-box}
@@ -35,7 +49,7 @@
     .muted{color:var(--muted)}
 
     .month-list{display:flex;flex-direction:column;gap:10px}
-    .mon{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:inherit}
+    .mon{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:inherit;transition:background-color .15s, border-color .15s}
     .mon:hover{background:color-mix(in oklab, var(--brand-weak) 35%, var(--card))}
     .mon .num{min-width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--brand-weak);font-weight:900}
     .mon .text{display:flex;flex-direction:column}
@@ -75,12 +89,54 @@
     .quickbox .linkbox{ display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--line); background:#fff; border-radius:12px; text-decoration:none; color:inherit; font-weight:700; }
     .quickbox .linkbox:hover{ background:color-mix(in oklab, var(--brand-weak) 35%, #fff); border-color:#c7d2fe; }
 
-    /* 월 요약 배경 톤 (1·2·4·6월) */
-    .month-list .mon[data-month="1"] .desc{background:var(--tone-yellow-bg);border:1px solid var(--tone-yellow-strong);border-radius:10px;padding:8px 10px;}
-    .month-list .mon[data-month="2"] .desc{background:var(--tone-green-bg);border:1px solid var(--tone-green-border);border-radius:10px;padding:8px 10px;}
-    .month-list .mon[data-month="4"] .desc{background:var(--tone-blue-bg);border:1px solid var(--tone-blue-border);border-radius:10px;padding:8px 10px;}
-    /* ✅ 6월도 옅은 배경 박스 적용(블루톤) */
-    .month-list .mon[data-month="6"] .desc{background:var(--tone-blue-bg);border:1px solid var(--tone-blue-border);border-radius:10px;padding:8px 10px;}
+    /* ✅ 월별 색상: 요약화면 월박스(.mon) + 요약박스(.desc) 모두 적용 */
+    .month-list .mon[data-month="1"]{ background:var(--m1-bg); border-color:var(--m1-br); }
+    .month-list .mon[data-month="1"] .num{ background:color-mix(in oklab, var(--m1-br) 35%, #fff); }
+    .month-list .mon[data-month="1"] .desc{ background:var(--m1-bg); border:1px solid var(--m1-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="2"]{ background:var(--m2-bg); border-color:var(--m2-br); }
+    .month-list .mon[data-month="2"] .num{ background:color-mix(in oklab, var(--m2-br) 35%, #fff); }
+    .month-list .mon[data-month="2"] .desc{ background:var(--m2-bg); border:1px solid var(--m2-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="3"]{ background:var(--m3-bg); border-color:var(--m3-br); }
+    .month-list .mon[data-month="3"] .num{ background:color-mix(in oklab, var(--m3-br) 35%, #fff); }
+    .month-list .mon[data-month="3"] .desc{ background:var(--m3-bg); border:1px solid var(--m3-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="4"]{ background:var(--m4-bg); border-color:var(--m4-br); }
+    .month-list .mon[data-month="4"] .num{ background:color-mix(in oklab, var(--m4-br) 35%, #fff); }
+    .month-list .mon[data-month="4"] .desc{ background:var(--m4-bg); border:1px solid var(--m4-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="5"]{ background:var(--m5-bg); border-color:var(--m5-br); }
+    .month-list .mon[data-month="5"] .num{ background:color-mix(in oklab, var(--m5-br) 35%, #fff); }
+    .month-list .mon[data-month="5"] .desc{ background:var(--m5-bg); border:1px solid var(--m5-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="6"]{ background:var(--m6-bg); border-color:var(--m6-br); }
+    .month-list .mon[data-month="6"] .num{ background:color-mix(in oklab, var(--m6-br) 35%, #fff); }
+    .month-list .mon[data-month="6"] .desc{ background:var(--m6-bg); border:1px solid var(--m6-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="7"]{ background:var(--m7-bg); border-color:var(--m7-br); }
+    .month-list .mon[data-month="7"] .num{ background:color-mix(in oklab, var(--m7-br) 35%, #fff); }
+    .month-list .mon[data-month="7"] .desc{ background:var(--m7-bg); border:1px solid var(--m7-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="8"]{ background:var(--m8-bg); border-color:var(--m8-br); }
+    .month-list .mon[data-month="8"] .num{ background:color-mix(in oklab, var(--m8-br) 35%, #fff); }
+    .month-list .mon[data-month="8"] .desc{ background:var(--m8-bg); border:1px solid var(--m8-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="9"]{ background:var(--m9-bg); border-color:var(--m9-br); }
+    .month-list .mon[data-month="9"] .num{ background:color-mix(in oklab, var(--m9-br) 35%, #fff); }
+    .month-list .mon[data-month="9"] .desc{ background:var(--m9-bg); border:1px solid var(--m9-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="10"]{ background:var(--m10-bg); border-color:var(--m10-br); }
+    .month-list .mon[data-month="10"] .num{ background:color-mix(in oklab, var(--m10-br) 35%, #fff); }
+    .month-list .mon[data-month="10"] .desc{ background:var(--m10-bg); border:1px solid var(--m10-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="11"]{ background:var(--m11-bg); border-color:var(--m11-br); }
+    .month-list .mon[data-month="11"] .num{ background:color-mix(in oklab, var(--m11-br) 35%, #fff); }
+    .month-list .mon[data-month="11"] .desc{ background:var(--m11-bg); border:1px solid var(--m11-br); border-radius:10px; padding:8px 10px; }
+
+    .month-list .mon[data-month="12"]{ background:var(--m12-bg); border-color:var(--m12-br); }
+    .month-list .mon[data-month="12"] .num{ background:color-mix(in oklab, var(--m12-br) 35%, #fff); }
+    .month-list .mon[data-month="12"] .desc{ background:var(--m12-bg); border:1px solid var(--m12-br); border-radius:10px; padding:8px 10px; }
 
     /* 4월 상세 디자인 강화 */
     .desc-box{white-space:normal}
