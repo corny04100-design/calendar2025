@@ -150,6 +150,10 @@
     /* 접근성 보완 */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
   </style>
+<style>
+  /* 링크 클릭 이슈 대비: 외부 링크 강제 활성화 */
+  .quickbox .linkbox{ pointer-events:auto; position:relative; z-index:1; }
+</style>
 </head>
 <body>
   <div class="wrap">
@@ -162,9 +166,9 @@
     <!-- 세액계산 퀵박스 -->
     <div class="card p3 quickbox" aria-label="세액계산 바로가기">
       <span class="label">세액계산</span>
-      <a class="linkbox" href="https://corny04100-design.github.io/acquisition2025/" target="_blank" rel="noopener">개인 취득세계산 ↗</a>
-      <a class="linkbox" href="https://corny04100-design.github.io/property2025/" target="_blank" rel="noopener">재산세계산(공동주택) ↗</a>
-      <a class="linkbox" href="https://corny04100-design.github.io/property2025_land/" target="_blank" rel="noopener">재산세계산(토지) ↗</a>
+      <a class="linkbox" href="https://corny04100-design.github.io/acquisition2025/" target="_blank" rel="noopener noreferrer">개인 취득세계산 ↗</a>
+      <a class="linkbox" href="https://corny04100-design.github.io/property2025/" target="_blank" rel="noopener noreferrer">재산세계산(공동주택) ↗</a>
+      <a class="linkbox" href="https://corny04100-design.github.io/property2025_land/" target="_blank" rel="noopener noreferrer">재산세계산(토지) ↗</a>
     </div>
 
     <section id="monthView" class="card p3" aria-label="월별 세목 요약">
@@ -473,9 +477,29 @@
       else { backToList(); }
     });
 
-    // === 초기 로드: 항상 전체 요약 화면으로 시작. 해시가 있으면 해당 월 상세로 진입 ===
+    // 외부 링크가 일부 환경에서 열리지 않는 문제 대응: 수동으로 window.open 처리
+function enhanceExternalLinks(){
+  document.querySelectorAll('.quickbox .linkbox').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      // 수정키/새탭 클릭은 기본동작 유지
+      if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      e.stopPropagation();
+      try{ window.open(a.href, '_blank', 'noopener'); }catch(_){ location.href = a.href; }
+    });
+    a.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){
+        e.preventDefault();
+        try{ window.open(a.href, '_blank', 'noopener'); }catch(_){ location.href = a.href; }
+      }
+    });
+  });
+}
+
+// === 초기 로드: 항상 전체 요약 화면으로 시작. 해시가 있으면 해당 월 상세로 진입 ===
     backToList();
     renderMonthList();
+    enhanceExternalLinks();
     if(location.hash){
       const m = (location.hash.match(/^#m(\d{1,2})$/)||[])[1];
       if(m) openDetail(Number(m), {push:false});
@@ -483,4 +507,3 @@
   </script>
 </body>
 </html>
-.
